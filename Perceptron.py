@@ -1,5 +1,5 @@
 import numpy as np
-class Perceptorn:
+class Perceptron:
     def __init__(self,eta,n_iter):
         self.eta=eta
         self.n_iter=n_iter
@@ -14,15 +14,15 @@ class Perceptorn:
         for _ in range(self.n_iter):
             errors=0
             for xi,target in zip(x,y):
-                update=self.eta*(target-predict(xi))
+                update=self.eta*(target-self.predict(xi))
                 self.w_[1:]+=update*xi
                 self.w_[0]+=update
-                erros+=int(update!=0.0)#誤差があるときだけ加算
+                errors+=int(update!=0.0)#誤差があるときだけ加算
             self.errors_.append(errors)
         return self
 
     def net_input(self,x):
-        return np.dot(x,self.w_[1:])+self.w[0]
+        return np.dot(x,self.w_[1:])+self.w_[0]
     
     def predict(self,x):   
-        np.where(self.net_input(x)>=0,1,-1)
+        return np.where(self.net_input(x)>=0.0,1,-1)
