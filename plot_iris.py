@@ -19,4 +19,5 @@ ax.set_ylabel('petal length[cm]')
 
 ax.legend(loc='upper left')
 
+fig.show()
 plt.show()
