@@ -16,16 +16,17 @@ x=df.iloc[:100,[0,2]].values
 #generate AdalineSGD
 ppn=AdalineSGD(eta=0.01,n_iter=15)
 ppn.fit(x,y)
+y_pred=ppn.predict(x)
 
-#generate figure
+from sklearn.metrics import accuracy_score
+print('Accuracy_metrics: %.2f' % accuracy_score(y,y_pred))
+
 fig=plt.figure()
 plane=fig.add_subplot(1,1,1)
 plane.plot(range(1,len(ppn.cost_)+1),ppn.cost_)
 
-plane.set_xlabel('epocs')
-plane.set_ylabel('costs')
-
-plot_decision_regions(x,y,classifier=ppn)
-
 fig.show()
 plt.show()
+
+ppn.accuracy(x,y)
+plot_decision_regions(x,y,classifier=ppn)

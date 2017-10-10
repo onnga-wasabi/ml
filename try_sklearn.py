@@ -26,4 +26,6 @@ print('Accuracy:'+str((len(y_test)-(y_test!=y_pred).sum())/len(y_test)))
 from sklearn.metrics import accuracy_score
 print('Accuracy_metris: %.2f' % accuracy_score(y_test,y_pred))
 
+ppn.accuracy(x,y)
 plot_decision_regions(x_test_std,y_test,classifier=ppn)
+
