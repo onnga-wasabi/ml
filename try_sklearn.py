@@ -3,6 +3,7 @@ from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Perceptron
 
+from use_colormap import plot_decision_regions
 import numpy as np
 import pandas as pd
 
@@ -24,3 +25,5 @@ print('Accuracy:'+str((len(y_test)-(y_test!=y_pred).sum())/len(y_test)))
 
 from sklearn.metrics import accuracy_score
 print('Accuracy_metris: %.2f' % accuracy_score(y_test,y_pred))
+
+plot_decision_regions(x_test_std,y_test,classifier=ppn)
