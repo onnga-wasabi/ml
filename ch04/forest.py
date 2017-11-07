@@ -11,11 +11,21 @@ def main():
     forest.fit(x_train, y_train)
     features = forest.feature_importances_
 
-    index = np.argsort(forest.feature_importances_)[::-1]
-    labels = load_label()
+    indices = np.argsort(forest.feature_importances_)[::-1]
+    labels = load_label()[1:]
+    sorted_labels = []
     print('importances are')
-    for i in range(len(labels) - 1):
-        print('%2d) %-*s %f' % (i + 1, 30, labels[i], features[index[i]]))
+    for i in range(len(labels)):
+        print('%2d) %-*s %f' %
+              (i + 1, 30, labels[indices[i]], features[indices[i]]))
+        sorted_labels.append(labels[indices[i]])
+
+    fig = plt.figure()
+    plt.bar(range(len(labels)), features[indices])
+    plt.xticks(range(len(labels)), sorted_labels, rotation=90)
+    plt.tight_layout()
+    fig.show()
+    plt.show()
 
 
 if __name__ == '__main__':
