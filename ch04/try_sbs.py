@@ -35,7 +35,7 @@ def main():
     x_test_std = stdsc.transform(x_test)
 
     knn = KNeighborsClassifier(n_neighbors=2)
-    sbs = SBS(knn, k_features=1)
+    sbs = SBS(knn, k_features=7)
     sbs.fit(x_train_std, y_train)
     k_feat = [len(k) for k in sbs.subsets_]
     fig = plt.figure()
