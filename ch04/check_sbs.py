@@ -35,13 +35,16 @@ def main():
     x_test_std = stdsc.transform(x_test)
 
     knn = KNeighborsClassifier(n_neighbors=2)
+    knn.fit(x_train_std,y_train)
+    print(knn.score(x_train_std,y_train))
+    print(knn.score(x_test_std,y_test))
+
     sbs = SBS(knn, k_features=1)
     sbs.fit(x_train_std, y_train)
-    k_feat = [len(k) for k in sbs.subsets_]
-    fig = plt.figure()
-    plt.plot(k_feat, sbs.scores_, marker='o')
-    print('\n'.join([str(format(k, '2')) + ' : ' + str(format(s, '.2f'))
-                     for k, s in zip(k_feat, sbs.scores_)]))
+    knn.fit(x_train_std[:,sbs.subsets_[8]],y_train)
+    print()
+    print(knn.score(x_train_std[:,sbs.subsets_[8]],y_train))
+    print(knn.score(x_test_std[:,sbs.subsets_[8]],y_test))
 
 
 if __name__ == '__main__':
