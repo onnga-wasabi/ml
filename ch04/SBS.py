@@ -21,11 +21,11 @@ class SBS():
         x_train, x_test, y_train, y_test = train_test_split(
             x, y, test_size=self.test_size, random_state=self.random_state)
         dim = x.shape[1]
-        self.indices_ = tuple(range(dim))
-        self.subsets = [self.indices_]
-        score = self._calc_score(
+        self.indices_ = tuple(range(dim))#要素の書き換えができないだけで再代入はできる事に注意
+        self.subsets_ = [self.indices_]#単にリストにして格納しているだけ．
+        score = self._calc_score_(
             x_train, y_train, x_test, y_test, self.indices_)
-        self.scores_ = [score]
+        self.scores_ = [score]#単にリストにして格納しているだけ．
         while dim > self.k_features:
             scores = []
             subsets = []
@@ -36,10 +36,11 @@ class SBS():
 
             best = np.argmax(scores)
             self.indices_ = subsets[best]
-            self.subusets_.append(self.indices_)
-            dim = -1
-            self.scores_append(socre[best])
-        self.k_scores_ = self.scores[-1]
+            self.subsets_.append(self.indices_)
+            dim -= 1
+            self.scores_.append(scores[best])
+
+        self.k_scores_ = self.scores_[-1]
         return self
 
     def transform(self, x):
