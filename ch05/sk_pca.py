@@ -16,11 +16,18 @@ def main():
 
     lr = LogisticRegression()
     pca = PCA(n_components=2)
+
     x_train_pca = pca.fit_transform(x_train_std)
     x_test_pca = pca.transform(x_test_std)
+    print(pca.explained_variance_ratio_)
 
     lr.fit(x_train_pca, y_train)
     plot_decision_regions(x=x_test_pca, y=y_test, classifier=lr)
+
+    # show all explained variance ratio
+    pca = PCA(n_components=None)
+    pca.fit(x_train_std)
+    print(pca.explained_variance_ratio_)
 
 
 if __name__ == '__main__':
