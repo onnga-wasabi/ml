@@ -1,8 +1,10 @@
 from wine import *
 from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
 
 import numpy as np
 import matplotlib.pyplot as plt
+from use_colormap import plot_decision_regions
 
 
 def main():
@@ -26,7 +28,34 @@ def main():
     for label in np.unique(y_train):
         n = x_train_std[y_train == label].shape[0]
         scat = x_mean[label - 1] - mean_all
+        scat = scat.reshape(d, 1)
         S_B += n * scat.dot(scat.T)
+
+    # calculate eigen values,vectors of inv(S_B).dot(S_W)
+    eigen_vals, eigen_vecs = np.linalg.eig(np.linalg.inv(S_W).dot(S_B))
+    # plot(np.abs(eigen_vals))
+
+    # make matrix
+    orderd_vecs = np.array([eigen_vecs[:, i]
+                            for i in np.argsort(np.abs(eigen_vals))[::-1]])
+    w = np.vstack((orderd_vecs[0].real, orderd_vecs[1].real)).T
+    x_train_lda = x_train_std.dot(w)
+    print(x_train_lda.shape)
+    lr = LogisticRegression()
+    lr.fit(x_train_lda, y_train)
+    x_test_lda = x_test_std.dot(w)
+    plot_decision_regions(x_train_lda, y_train, classifier=lr)
+    plot_decision_regions(x_test_lda, y_test, classifier=lr)
+
+
+def plot(vals):
+    vals = np.sort(vals)[::-1]
+    bars = [np.sum(vals[:i])for i in range(len(vals))]
+    fig = plt.figure()
+    plt.bar(range(len(vals)), vals, align='edge')
+    plt.step(range(len(vals)), bars, where='pre')
+    fig.show()
+    plt.show()
 
 
 if __name__ == '__main__':
