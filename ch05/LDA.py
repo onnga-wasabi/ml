@@ -40,7 +40,7 @@ def main():
                             for i in np.argsort(np.abs(eigen_vals))[::-1]])
     w = np.vstack((orderd_vecs[0].real, orderd_vecs[1].real)).T
     x_train_lda = x_train_std.dot(w)
-    print(x_train_lda.shape)
+
     lr = LogisticRegression()
     lr.fit(x_train_lda, y_train)
     x_test_lda = x_test_std.dot(w)
