@@ -4,9 +4,15 @@ from scipy.linalg import eigh
 import numpy as np
 
 
-def rbf_kernel_pca(x, gamma, n_compenents):
+def rbf_kernel_pca(x, gamma, n_components):
     sq_dists = pdist(x, 'sqeuclidean')
     mat_sq_dists = squareform(sq_dists)
     K = exp(-gamma * mat_sq_dists)
-    d = np.shape(mat_sq_dists)
-    print(d)
+    d = K.shape[0]
+    one_nth = np.ones((d, d)) / d
+    K = K - one_nth.dot(K) - K.dot(one_nth) + one_nth.dot(K).dot(one_nth)
+    eigen_vals, eigen_vecs = eigh(K)
+
+    # 上位の固有ベクトルを取得
+    x_pc = eigen_vecs[:, -1:-n_components - 1:-1]
+    return x_pc
