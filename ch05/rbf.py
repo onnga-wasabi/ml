@@ -12,6 +12,7 @@ def rbf_kernel_pca(x, gamma, n_components):
     one_nth = np.ones((d, d)) / d
     K = K - one_nth.dot(K) - K.dot(one_nth) + one_nth.dot(K).dot(one_nth)
     eigen_vals, eigen_vecs = eigh(K)
+    print('eigen_vecs\'s shape:', eigen_vecs.shape)
 
     # 上位の固有ベクトルを取得
     x_pc = eigen_vecs[:, -1:-n_components - 1:-1]
