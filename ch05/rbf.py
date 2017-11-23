@@ -15,5 +15,7 @@ def rbf_kernel_pca(x, gamma, n_components):
     print('eigen_vecs\'s shape:', eigen_vecs.shape)
 
     # 上位の固有ベクトルを取得
-    x_pc = eigen_vecs[:, -1:-n_components - 1:-1]
-    return x_pc
+    alphas = eigen_vecs[:, -1:-n_components - 1:-1]
+
+    lambdas = [eigen_vals[-i] for i in range(1, n_components + 1)]
+    return alphas, lambdas
