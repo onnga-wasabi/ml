@@ -13,7 +13,7 @@ def load_cancer():
     # df.info()
     y = df.iloc[:, 2]
     x = df.iloc[:, 3:]
-    return x, y
+    return x.values, y.values
 
 
 if __name__ == '__main__':
