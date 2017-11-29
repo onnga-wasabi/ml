@@ -33,3 +33,10 @@ class MajorityVoteClassifier(BaseEstimator, ClassifierMixin):
             label, weights=self.weights)) for label in predicted_labels]).T
 
         return maj_vote
+
+    def predict_proba(self, X):
+        probas = np.array([clf.predict_proba(X)
+                           for clf in self.classifiers_])
+        # np.average()は重み付き平均を求められる
+        avg_probas = np.average(probas, axis=0, weights=self.weights)
+        return avg_probas
