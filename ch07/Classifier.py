@@ -25,3 +25,11 @@ class MajorityVoteClassifier(BaseEstimator, ClassifierMixin):
             fitted_clf = clone(clf).fit(X, self.lablenc_.transform(y))
             self.classifiers_.append(fitted_clf)
         return self
+
+    def predict(self, X):
+        predicted_labels = np.array([clf.predict(X)
+                                     for clf in self.classifiers_]).T
+        maj_vote = np.array([np.argmax(np.bincount(
+            label, weights=self.weights)) for label in predicted_labels]).T
+
+        return maj_vote
