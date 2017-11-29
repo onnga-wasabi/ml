@@ -17,6 +17,11 @@ class MajorityVoteClassifier(BaseEstimator, ClassifierMixin):
         self.weights = weights
 
     def fit(self, X, y):
+        '''
+        基本はそれぞれのクラスのfitを適用すれば良い
+        labelencoderは後のpredictでbincountを使うのでインデックスとクラスラベルを
+        同一に扱うために用いている
+        '''
         self.lablenc_ = LabelEncoder()
         self.lablenc_.fit(y)
         self.classes_ = self.lablenc_.classes_
@@ -40,3 +45,13 @@ class MajorityVoteClassifier(BaseEstimator, ClassifierMixin):
         # np.average()は重み付き平均を求められる
         avg_probas = np.average(probas, axis=0, weights=self.weights)
         return avg_probas
+
+    def get_params(self, deep=True):
+        if not deep:
+            return super(MajorityVoteClassifier, self).get_params(deep=False)
+        else:
+            out = self.named_classifiers.copy()
+            for name, step in self.named_classifiers.items():
+                for key, value in step.get_params().items():
+                    out[str(name) + '__' + str(key)] = value
+        return out
