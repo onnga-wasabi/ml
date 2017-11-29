@@ -8,8 +8,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from Classifier import MajorityVoteClassifier
+from sklearn.metrics import roc_curve, auc
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -25,9 +27,9 @@ def main():
                       ('clf', clf3)])
 
     # 表示用クラスラベルリスト
-    class_label = ['LogisticRegression',
-                   'DecisionTree',
-                   'KNeighbors']
+    class_labels = ['LogisticRegression',
+                    'DecisionTree',
+                    'KNeighbors']
     '''
     for clf, label in zip([clf1, clf2, clf3], class_label):
         score = cross_val_score(estimator=clf,
@@ -39,15 +41,16 @@ def main():
     print()
     '''
     mv_clf = MajorityVoteClassifier(classifiers=[pipe1, clf2, pipe3])
-    class_label += ['MajorityVote']
+    class_labels += ['MajorityVote']
     all_clf = [pipe1, clf2, pipe3, mv_clf]
-    for clf, class_label in zip(all_clf, class_label):
+    for clf, class_label in zip(all_clf, class_labels):
         score = cross_val_score(estimator=clf,
                                 X=x_train,
                                 y=y_train,
                                 cv=10,
                                 scoring='roc_auc')
         print(class_label, np.mean(score).round(4))
+    show_roc(x_train, x_test, y_train, y_test, all_clf, class_labels)
     return 0
 
 
@@ -60,6 +63,23 @@ def make_data(test_size):
     x_train, x_test, y_train, y_test =\
         train_test_split(df.data[50:, [1, 2]], y, test_size=test_size)
     return x_train, x_test, y_train, y_test
+
+
+def show_roc(x_train, x_test, y_train, y_test, clfs, labels):
+    fig = plt.figure()
+    linestyles = ['--', ':', '-', '-.']
+    for clf, label, line in zip(clfs, labels, linestyles):
+        y_pred = clf.fit(x_train, y_train).predict_proba(x_test)
+        fpr, tpr, _treshold = roc_curve(y_true=y_test, y_score=y_pred[:, 1])
+        roc_auc = auc(x=fpr, y=tpr).round(3)
+        plt.plot(fpr, tpr,
+                 label=label + ' (auc = ' + str(roc_auc) + ')',
+                 linestyle=line)
+    fig.canvas.manager.window.attributes('-topmost', 1)
+    plt.xlabel('fause positive rate')
+    plt.ylabel('true positive rate')
+    plt.legend()
+    plt.pause(3)
 
 
 if __name__ == '__main__':
