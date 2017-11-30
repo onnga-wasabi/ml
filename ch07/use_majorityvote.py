@@ -12,6 +12,7 @@ from sklearn.metrics import roc_curve, auc
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import itertools
 
 
 def main():
@@ -50,8 +51,10 @@ def main():
                                 cv=10,
                                 scoring='roc_auc')
         print(class_label, np.mean(score).round(4))
-    show_roc(x_train, x_test, y_train, y_test, all_clf, class_labels)
-    print(mv_clf.get_params(deep=False))
+    #show_roc(x_train, x_test, y_train, y_test, all_clf, class_labels)
+    # print(mv_clf.get_params(deep=False))
+    show_decisionline(x_train, x_test, y_train, y_test, all_clf, class_labels)
+
     return 0
 
 
@@ -63,6 +66,7 @@ def make_data(test_size):
     y = le.fit_transform(y)
     x_train, x_test, y_train, y_test =\
         train_test_split(df.data[50:, [1, 2]], y, test_size=test_size)
+
     return x_train, x_test, y_train, y_test
 
 
@@ -81,6 +85,33 @@ def show_roc(x_train, x_test, y_train, y_test, clfs, labels):
     plt.ylabel('true positive rate')
     plt.legend()
     plt.pause(3)
+
+    return 0
+
+
+def show_decisionline(x_train, x_test, y_train, y_test, clfs, labels):
+    x_min = x_test[:, 0].min() - 1
+    x_max = x_test[:, 0].max() + 1
+    y_min = x_test[:, 1].min() - 1
+    y_max = x_test[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                         np.arange(y_min, y_max, 0.1))
+    fig, ax = plt.subplots(2, 2, figsize=(12, 9))
+    for idx, clf, title in zip(itertools.product([0, 1], [0, 1]), clfs, labels):
+        clf.fit(x_train, y_train)
+        Z = clf.predict(np.array([xx.ravel(), yy.ravel()]).T)
+        # contourf()でxxに対応して等高線をかくため
+        Z = Z.reshape(xx.shape)
+        ax[idx].scatter(x_test[y_test == 0, 0],
+                        x_test[y_test == 0, 1], marker='^', color='blue')
+        ax[idx].scatter(x_test[y_test == 1, 0],
+                        x_test[y_test == 1, 1], marker='o', color='red')
+        ax[idx].contourf(xx, yy, Z, alpha=0.1)
+        ax[idx].set_title(title)
+    # 軸を表示したい場合は全てに対して行うか、plt.text(x,y,s,fontsize)で調整するか
+    plt.show()
+
+    return 0
 
 
 if __name__ == '__main__':
