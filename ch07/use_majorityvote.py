@@ -51,6 +51,7 @@ def main():
                                 scoring='roc_auc')
         print(class_label, np.mean(score).round(4))
     show_roc(x_train, x_test, y_train, y_test, all_clf, class_labels)
+    print(mv_clf.get_params(deep=False))
     return 0
 
 
