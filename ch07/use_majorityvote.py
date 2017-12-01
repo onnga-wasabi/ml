@@ -9,53 +9,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from Classifier import MajorityVoteClassifier
 from sklearn.metrics import roc_curve, auc
+from sklearn.model_selection import GridSearchCV
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
-
-
-def main():
-    x_train, x_test, y_train, y_test = make_data(test_size=0.3)
-    clf1 = LogisticRegression(penalty='l2',
-                              C=0.001)
-    clf2 = DecisionTreeClassifier(max_depth=1,
-                                  criterion='entropy')
-    clf3 = KNeighborsClassifier(n_neighbors=1)
-    pipe1 = Pipeline([('sc', StandardScaler()),
-                      ('clf', clf1)])
-    pipe3 = Pipeline([('sc', StandardScaler()),
-                      ('clf', clf3)])
-
-    # 表示用クラスラベルリスト
-    class_labels = ['LogisticRegression',
-                    'DecisionTree',
-                    'KNeighbors']
-    '''
-    for clf, label in zip([clf1, clf2, clf3], class_label):
-        score = cross_val_score(estimator=clf,
-                                X=x_train,
-                                y=y_train,
-                                cv=10,
-                                scoring='roc_auc')
-        print(label, np.mean(score))
-    print()
-    '''
-    mv_clf = MajorityVoteClassifier(classifiers=[pipe1, clf2, pipe3])
-    class_labels += ['MajorityVote']
-    all_clf = [pipe1, clf2, pipe3, mv_clf]
-    for clf, class_label in zip(all_clf, class_labels):
-        score = cross_val_score(estimator=clf,
-                                X=x_train,
-                                y=y_train,
-                                cv=10,
-                                scoring='roc_auc')
-        print(class_label, np.mean(score).round(4))
-    #show_roc(x_train, x_test, y_train, y_test, all_clf, class_labels)
-    # print(mv_clf.get_params(deep=False))
-    show_decisionline(x_train, x_test, y_train, y_test, all_clf, class_labels)
-
-    return 0
 
 
 def make_data(test_size):
@@ -94,8 +52,8 @@ def show_decisionline(x_train, x_test, y_train, y_test, clfs, labels):
     x_max = x_test[:, 0].max() + 1
     y_min = x_test[:, 1].min() - 1
     y_max = x_test[:, 1].max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                         np.arange(y_min, y_max, 0.1))
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
+                         np.arange(y_min, y_max, 0.01))
     fig, ax = plt.subplots(2, 2, figsize=(12, 9))
     for idx, clf, title in zip(itertools.product([0, 1], [0, 1]), clfs, labels):
         clf.fit(x_train, y_train)
@@ -110,6 +68,47 @@ def show_decisionline(x_train, x_test, y_train, y_test, clfs, labels):
         ax[idx].set_title(title)
     # 軸を表示したい場合は全てに対して行うか、plt.text(x,y,s,fontsize)で調整するか
     plt.show()
+
+    return 0
+
+
+def main():
+    x_train, x_test, y_train, y_test = make_data(test_size=0.3)
+    clf1 = LogisticRegression(penalty='l2',
+                              C=0.001)
+    clf2 = DecisionTreeClassifier(max_depth=1,
+                                  criterion='entropy')
+    clf3 = KNeighborsClassifier(n_neighbors=1)
+    pipe1 = Pipeline([('sc', StandardScaler()),
+                      ('clf', clf1)])
+    pipe3 = Pipeline([('sc', StandardScaler()),
+                      ('clf', clf3)])
+
+    # 表示用クラスラベルリスト
+    class_labels = ['LogisticRegression',
+                    'DecisionTree',
+                    'KNeighbors']
+    mv_clf = MajorityVoteClassifier(classifiers=[pipe1, clf2, pipe3])
+    class_labels += ['MajorityVote']
+    all_clf = [pipe1, clf2, pipe3, mv_clf]
+    for clf, class_label in zip(all_clf, class_labels):
+        score = cross_val_score(estimator=clf,
+                                X=x_train,
+                                y=y_train,
+                                cv=10,
+                                scoring='roc_auc')
+        print(class_label, np.mean(score).round(4))
+    #show_roc(x_train, x_test, y_train, y_test, all_clf, class_labels)
+    # print(mv_clf.get_params(deep=False))
+    #show_decisionline(x_train, x_test, y_train, y_test, all_clf, class_labels)
+    params = {'decisiontreeclassifier__max_depth': [1, 2, 3],
+              'pipeline-1__clf__C': [0.001, 0.1, 100]}
+    gs = GridSearchCV(estimator=mv_clf,
+                      scoring='roc_auc',
+                      n_jobs=-1,
+                      param_grid=params)
+    gs.fit(x_train, y_train)
+    print(gs.best_score_)
 
     return 0
 
