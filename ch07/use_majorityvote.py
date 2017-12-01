@@ -108,7 +108,9 @@ def main():
                       n_jobs=-1,
                       param_grid=params)
     gs.fit(x_train, y_train)
-    print(gs.best_score_)
+    # http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
+    for params, score in zip(gs.cv_results_['params'], gs.cv_results_['mean_test_score'].round(3)):
+        print(score.round(3), params)
 
     return 0
 
