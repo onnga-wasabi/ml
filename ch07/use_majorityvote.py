@@ -110,7 +110,7 @@ def main():
     gs.fit(x_train, y_train)
     # http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
     for params, score in zip(gs.cv_results_['params'], gs.cv_results_['mean_test_score'].round(3)):
-        print(score.round(3), params)
+        print(score, params)
 
     return 0
 
