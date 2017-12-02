@@ -2,7 +2,7 @@ import numpy as np
 
 
 class LinearRegressionGD(object):
-    def __init__(self, n_iter=50, eta=0.001):
+    def __init__(self, n_iter=20, eta=0.001):
         self.n_iter = n_iter
         self.eta = eta
 

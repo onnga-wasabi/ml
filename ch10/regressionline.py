@@ -25,11 +25,27 @@ def make_data(test_size=0.3):
     return train_test_split(x_std, y_std, test_size=test_size)
 
 
+def show_regressionline(lr, x, y, x_std):
+    fig = plt.figure()
+    fig.canvas.manager.window.attributes('-topmost', 1)
+    plt.scatter(x, y, color='blue', marker='x')
+    plt.plot(x, lr.predict(x_std), color='red')
+    # plt.show()
+    plt.pause(0.5)
+
+    return 0
+
+
 def main():
     x_train_std, x_test_std, y_train_std, y_test_std = \
         make_data()
     lr = LinearRegressionGD()
     lr.fit(x_train_std, y_train_std)
+    y_pred = lr.predict(x_test_std)
+    print('R^2 score:', r2_score(y_test_std, y_pred).round(3))
+    show_regressionline(lr, x_test_std, y_test_std, x_test_std)
+    print('slope    :', lr.weights_[1].round(3))
+    print('intercept:', lr.weights_[0].round(3))
 
     return 0
 
