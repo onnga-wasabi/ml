@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 import os
 import sys
@@ -12,7 +13,8 @@ def main():
     sns.set(style='whitegrid', context='notebook')
     cols = ['LSTAT', 'INDUS', 'NOX', 'RM', 'MEDV']
     sns.pairplot(df[cols])
-    plt.show()
+    #plt.show()
+    
     return 0
 
 
