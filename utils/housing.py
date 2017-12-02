@@ -2,8 +2,8 @@ import pandas as pd
 import os
 
 
-def load_housing():
-    if 'data/housing.csv' in os.listdir('./'):
+def load_housing(path='./'):
+    if 'data/housing.csv' in os.listdir(path):
         df = pd.read_csv('data/housing.csv')
     else:
         df = pd.read_csv(
