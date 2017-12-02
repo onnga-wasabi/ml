@@ -8,13 +8,14 @@ class LinearRegressionGD(object):
 
     def fit(self, x, y):
         self.costs_ = []
-        self.weights_ = np.zeros(1 + x.shape[1])
+        dim = x.shape[1]
+        self.weights_ = np.zeros(1 + dim)
         for _ in range(self.n_iter):
             errors = y - self.predict(x)
-            self.costs_.append(np.sum(errors**2 / 2))
             self.weights_[1:] += self.eta * x.T.dot(errors)
             self.weights_[0] += self.eta * np.sum(errors)
+            self.costs_.append(np.sum(errors**2) / 2)
         return self
 
     def predict(self, x):
-        return x.dot(self.weights_[1:]) + self.weights_[0]
+        return np.dot(x, self.weights_[1:]) + self.weights_[0]
