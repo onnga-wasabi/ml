@@ -11,6 +11,7 @@ def load_housing():
         df.to_csv('data/housing.csv', index=False)
     df.columns = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX',
                   'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATO', 'B', 'LSTAT', 'MEDV']
+    return df
 
 
 if __name__ == '__main__':
