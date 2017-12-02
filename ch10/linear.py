@@ -11,7 +11,7 @@ class LinearRegressionGD(object):
         self.weights_ = np.zeros(1 + x.shape[1])
         for _ in range(self.n_iter):
             errors = y - self.predict(x)
-            self.costs_.append(np.sum(0.5 * (errors**2)))
+            self.costs_.append(np.sum(errors**2 / 2))
             self.weights_[1:] += self.eta * x.T.dot(errors)
             self.weights_[0] += self.eta * np.sum(errors)
         return self
