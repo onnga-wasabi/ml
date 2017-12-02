@@ -15,11 +15,13 @@ from utils.housing import load_housing
 def make_data(test_size=0.3):
     df = load_housing('../utils/')
     df = df[['RM', 'MEDV']]
-    y = df['MEDV'].values
-    x = df['RM'].values
+    y = df[['MEDV']].values
+    x = df[['RM']].values
     sc = StandardScaler()
-    x_std = sc.fit_transform(x.reshape(-1, 1))
-    y_std = sc.fit_transform(y.reshape(-1, 1))
+    x_std = sc.fit_transform(x)
+    # 識別器にぶっこむときに目的変数は1次元を想定
+    y_std = sc.fit_transform(y).flatten()
+
     return train_test_split(x_std, y_std, test_size=test_size)
 
 
@@ -28,6 +30,7 @@ def main():
         make_data()
     lr = LinearRegressionGD()
     lr.fit(x_train_std, y_train_std)
+
     return 0
 
 
