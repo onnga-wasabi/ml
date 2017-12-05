@@ -38,6 +38,7 @@ def show_residues(regs, labels, x_train, x_test, y_train, y_test):
         ax[idx].set_xlabel('Predicted Value[price]')
         ax[idx].set_ylabel('Residue')
         ax[idx].set_title(title)
+        ax[idx].legend(loc='upper left')
     plt.subplots_adjust(wspace=0.2, hspace=0.4)
     plt.show()
     return 0
