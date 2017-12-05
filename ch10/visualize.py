@@ -34,7 +34,7 @@ def show_correlation_matrix(df):
 
 def main():
     df = load_housing(path='../utils/')
-    # show_scatter(df)
+    show_scatter(df)
     show_correlation_matrix(df)
 
     return 0
