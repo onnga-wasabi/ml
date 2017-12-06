@@ -33,16 +33,16 @@ def show_regression(lr, X, y, xa):
     return 0
 
 
-def show_other_scale(lr, x, y):
+def show_other_scale(lr, x, y, scale):
     fig = plt.figure()
     fig.canvas.manager.window.attributes('-topmost', 1)
     lr.fit(x, y)
     y_pred = lr.predict(x)
     score = r2_score(y, y_pred).round(2)
-    plt.scatter(x, y, marker='x', color='pink')
+    plt.scatter(x, y, marker='x', color='pink', label='train sample')
     xa = np.arange(x.min(), x.max(), 1).reshape(-1, 1)
     y_pred = lr.predict(xa)
-    plt.plot(xa, y_pred, label='R2 score:' + str(score))
+    plt.plot(xa, y_pred, label=scale + ' R2:' + str(score))
     plt.legend()
     plt.show()
     return 0
@@ -65,9 +65,11 @@ def main():
     show_regression(lr, X, y, xa)
 
     x_log = np.log(x)
-    show_other_scale(lr, x_log, y)
+    scale = 'log'
+    show_other_scale(lr, x_log, y, scale)
     y_sqrt = np.sqrt(y)
-    show_other_scale(lr, x_log, y_sqrt)
+    scale = 'log and squre'
+    show_other_scale(lr, x_log, y_sqrt, scale)
     return 0
 
 
