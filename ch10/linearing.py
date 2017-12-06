@@ -10,6 +10,11 @@ import os
 sys.path.append(os.pardir)
 from utils.housing import load_housing
 
+# ignore LAPACK error
+import warnings
+warnings.filterwarnings(action="ignore", module="scipy",
+                        message="^internal gelsd")
+
 
 def show_regression(lr, X, y, xa):
     fig = plt.figure()
@@ -23,6 +28,21 @@ def show_regression(lr, X, y, xa):
                  str(i + 1) + 'R2 score:' + str(r2))
     plt.xlabel('lower status of the population%')
     plt.ylabel('median value of homes in $1000\'s')
+    plt.legend()
+    plt.show()
+    return 0
+
+
+def show_other_scale(lr, x, y):
+    fig = plt.figure()
+    fig.canvas.manager.window.attributes('-topmost', 1)
+    lr.fit(x, y)
+    y_pred = lr.predict(x)
+    score = r2_score(y, y_pred).round(2)
+    plt.scatter(x, y, marker='x', color='pink')
+    xa = np.arange(x.min(), x.max(), 1).reshape(-1, 1)
+    y_pred = lr.predict(xa)
+    plt.plot(xa, y_pred, label='R2 score:' + str(score))
     plt.legend()
     plt.show()
     return 0
@@ -43,6 +63,11 @@ def main():
     xa.append(pl2.fit_transform(xa[0]))
     xa.append(pl3.fit_transform(xa[0]))
     show_regression(lr, X, y, xa)
+
+    x_log = np.log(x)
+    show_other_scale(lr, x_log, y)
+    y_sqrt = np.sqrt(y)
+    show_other_scale(lr, x_log, y_sqrt)
     return 0
 
 
