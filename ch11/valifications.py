@@ -1,6 +1,7 @@
 from sklearn.datasets import make_blobs
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
+from sklearn.metrics import silhouette_samples
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -54,10 +55,15 @@ def elbow(x):
     return 0
 
 
-def silhouette(km, x, y):
+def silhouette(km, x):
     fig = plt.figure()
     fig.canvas.manager.window.attributes('-topmost', 1)
     y_pred = km.fit_predict(x)
+    # may be mean score
+    #coefficient = silhouette_score(x, y_pred,metric='euclidean')
+
+    # return Silhouette Coefficient for each samples.
+    coefficients = silhouette_samples(x, y_pred)
 
     return 0
 
@@ -75,8 +81,8 @@ def main():
                 tol=1e-4,
                 n_jobs=-1)
     #verification(km, x, y)
-    elbow(x)
-    #silhoette(km, x, y)
+    # elbow(x)
+    silhouette(km, x)
 
     return 0
 
