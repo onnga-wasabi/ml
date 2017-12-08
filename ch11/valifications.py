@@ -1,5 +1,6 @@
 from sklearn.datasets import make_blobs
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,7 +13,7 @@ def verification(km, x, y):
     fig.canvas.manager.window.attributes('-topmost', 1)
     markers = ['o', '^', 'x']
     colors = ['blue', 'orange', 'green']
-    y_pred = km.fit_predict(x, y)
+    y_pred = km.fit_predict(x)
     for label, marker, color in zip(np.unique(y), markers, colors):
         ax1.scatter(x[y == label, 0], x[y == label, 1],
                     marker=marker, color=color)
@@ -31,7 +32,7 @@ def verification(km, x, y):
     return 0
 
 
-def elbow(x, y):
+def elbow(x):
     fig = plt.figure()
     fig.canvas.manager.window.attributes('-topmost', 1)
     inertias = []
@@ -42,13 +43,21 @@ def elbow(x, y):
                     n_init=10,
                     max_iter=300,
                     n_jobs=-1)
-        km.fit(x, y)
+        km.fit(x)
         # sum of squred distance of samples to their closest cluster center
         inertias.append(km.inertia_)
     plt.plot(num_of_clusters, inertias, marker='o')
     plt.ylabel('Distortion')
     plt.xlabel('Clusters')
     plt.show()
+
+    return 0
+
+
+def silhouette(km, x, y):
+    fig = plt.figure()
+    fig.canvas.manager.window.attributes('-topmost', 1)
+    y_pred = km.fit_predict(x)
 
     return 0
 
@@ -66,7 +75,8 @@ def main():
                 tol=1e-4,
                 n_jobs=-1)
     #verification(km, x, y)
-    elbow(x, y)
+    elbow(x)
+    #silhoette(km, x, y)
 
     return 0
 
