@@ -11,7 +11,7 @@ def verification(km, x, y):
     ax2 = fig.add_subplot(1, 2, 2)
     fig.canvas.manager.window.attributes('-topmost', 1)
     markers = ['o', '^', 'x']
-    colors = ['blue', 'red', 'green']
+    colors = ['blue', 'orange', 'green']
     y_pred = km.fit_predict(x, y)
     for label, marker, color in zip(np.unique(y), markers, colors):
         ax1.scatter(x[y == label, 0], x[y == label, 1],
@@ -22,7 +22,7 @@ def verification(km, x, y):
                 km.cluster_centers_[:, 1],
                 marker='*',
                 s=100,
-                color='orange',
+                color='red',
                 label='cluster centers')
     ax1.set_title('correct label')
     ax2.set_title('predicted classes by k-means++')
