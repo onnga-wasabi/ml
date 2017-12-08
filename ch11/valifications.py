@@ -5,6 +5,7 @@ from sklearn.metrics import silhouette_samples
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 
 
 def verification(km, x, y):
@@ -59,11 +60,34 @@ def silhouette(km, x):
     fig = plt.figure()
     fig.canvas.manager.window.attributes('-topmost', 1)
     y_pred = km.fit_predict(x)
-    # may be mean score
-    #coefficient = silhouette_score(x, y_pred,metric='euclidean')
 
     # return Silhouette Coefficient for each samples.
     coefficients = silhouette_samples(x, y_pred)
+    upper, lower = 0, 0
+    yticks = []
+    for i, label in enumerate(np.unique(y_pred)):
+        color = cm.hsv(i / len(np.unique(y_pred)))
+        values = coefficients[y_pred == label]
+        values.sort()
+        upper += len(values)
+        plt.barh(range(lower, upper),
+                 values,
+                 height=1,
+                 color=color)
+        yticks.append((upper + lower) / 2)
+        lower += len(values)
+    # may be mean score
+    coefficients_mean = silhouette_score(
+        x, y_pred, metric='euclidean').round(2)
+    plt.axvline(coefficients_mean, color='black',
+                label='mean: ' + str(coefficients_mean),
+                lw=2)
+    plt.yticks(yticks, np.unique(y_pred) + 1)
+    plt.ylabel('cluster')
+    plt.xlabel('silhouette coefficients')
+    plt.legend(loc='upper left')
+    plt.ylim(0, len(y_pred))
+    plt.show()
 
     return 0
 
