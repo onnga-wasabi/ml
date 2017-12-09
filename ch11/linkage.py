@@ -6,6 +6,8 @@ from scipy.spatial.distance import cdist, pdist, squareform
 from scipy.cluster.hierarchy import linkage
 from scipy.cluster.hierarchy import dendrogram
 
+from sklearn.cluster import AgglomerativeClustering
+
 
 def print_linkage_mat(data):
     dist_vec = pdist(data)
@@ -38,10 +40,22 @@ def show_dend(data, df):
     return 0
 
 
+def agglomeration(data):
+    ac = AgglomerativeClustering(n_clusters=2,
+                                 affinity='euclidean',
+                                 linkage='complete')
+    pred = ac.fit_predict(data)
+    print(pred)
+
+    return 0
+
+
 def main():
     data = np.random.rand(5, 3) * 10
     df = print_linkage_mat(data)
     show_dend(data, df)
+    agglomeration(data)
+
     return 0
 
 
