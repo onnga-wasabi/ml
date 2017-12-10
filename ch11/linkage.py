@@ -27,6 +27,7 @@ def print_linkage_mat(data):
 
 def show_dend(data, df):
     fig = plt.figure()
+    fig.canvas.manager.window.attributes('-topmost', 1)
     axd = fig.add_subplot(1, 2, 1)
     dend = dendrogram(df, orientation='left')
 
