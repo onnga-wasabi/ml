@@ -2,6 +2,9 @@ from neuralnet import NeuralNetMLP
 from sklearn.model_selection import train_test_split
 from load import load_mnist
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 def main():
     images, labels, rows, cols = load_mnist('../')
@@ -10,9 +13,14 @@ def main():
     nn = NeuralNetMLP(n_output=10,
                       n_features=x_train.shape[1],
                       n_hidden=50,
-                      epochs=500,
+                      epochs=50,
                       minibatches=10)
     nn.fit(x_train, y_train)
+    fig = plt.figure()
+    fig.canvas.manager.window.attributes('-topmost', 1)
+    plt.plot(np.arange(0, len(nn.cost_)), nn.cost_)
+    plt.show()
+
     return 0
 
 
