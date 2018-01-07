@@ -1,3 +1,4 @@
 */__pycache__/*
 /ch08/aclImdb/
 *.swp
+*.csv
