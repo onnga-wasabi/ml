@@ -29,12 +29,17 @@ def remove_stopwords(token):
     return [word for word in token if word not in stop]
 
 
+def load_clean_data(kind='train'):
+    docs = load_IMDb(kind)[0]
+    return np.array([preprocessor(doc) for doc in docs])
+
+
 def main():
     docs = load_IMDb()[0]
     docs = docs[:2]
     docs = np.array([preprocessor(doc) for doc in docs])
     tokens = np.array([tokenizer(doc) for doc in docs])
-    #print(tokens)
+    # print(tokens)
     #print(np.array([remove_stopwords(token) for token in tokens]))
 
     return 0
