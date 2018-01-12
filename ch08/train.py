@@ -30,8 +30,15 @@ def main():
                    'clf__C': [1.0, 10, 100]}]
     gs_tfidf_lr = GridSearchCV(estimator=tfidf_lr,
                                param_grid=param_grid,
+                               scoring='accuracy',
+                               n_jobs=-1,
                                cv=5)
     gs_tfidf_lr.fit(x_train, y_train)
+    print(gs_tfidf_lr.best_params_)
+    print(gs_tfidf_lr.best_score_)
+    clf = gs_tfidf_lr.best_estimator_
+    print(clf.score(x_test, y_test))
+
     return 0
 
 
